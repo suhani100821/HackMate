@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hack-Mate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+<style>
+  /* Base & Reset */
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1A202C 0%, #2D3748 100%);
+    color: #E2E8F0;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  /* Main Container */
+  .card {
+    background: #2D3748;
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 800px;
+    padding: 2.5rem 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  /* Header */
+  header {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  header svg {
+    width: 52px;
+    height: 52px;
+    fill: #A78BFA;
+    flex-shrink: 0;
+  }
+  header h1 {
+    font-weight: 700;
+    font-size: 2.25rem;
+    color: #F8FAFC;
+    margin: 0;
+    user-select: none;
+  }
+  
+  /* User ID Display */
+  #user-id-display {
+    font-size: 0.95rem;
+    color: #9CA3AF;
+    text-align: center;
+    word-break: break-word;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+  }
+  
+  /* Navigation buttons */
+  .nav-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .btn {
+    background: #6D28D9;
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(109, 40, 217, 0.4);
+  }
+  .btn:hover:not(:disabled) {
+    background: #7C3AED;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.6);
+  }
+  .btn:disabled {
+    background: #6B7280;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  .btn.register-btn {
+    background: #10B981;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  }
+  .btn.register-btn:hover:not(:disabled) {
+    background: #059669;
+    box-shadow: 0 6px 20px rgba(5, 150, 105, 0.6);
+  }
+  .btn.update-other-btn {
+    background: #F59E0B;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+  }
+  .btn.update-other-btn:hover:not(:disabled) {
+    background: #D97706;
+    box-shadow: 0 6px 20px rgba(217, 119, 6, 0.6);
+  }
+  .btn.cancel-btn {
+    background: #4B5563;
+    box-shadow: none;
+  }
+  .btn.cancel-btn:hover:not(:disabled) {
+    background: #6B7280;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Hidden */
+  .hidden {
+    display: none !important;
+  }
+
+  /* Textarea and inputs */
+  input[type="text"],
+  input[type="password"],
+  input[type="number"],
+  textarea {
+    width: 100%;
+    background: #1F2937;
+    border: 1px solid #4B5563;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #F9FAFB;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    resize: vertical;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+  }
+  input[type="text"]:focus,
+  input[type="password"]:focus,
+  input[type="number"]:focus,
+  textarea:focus {
+    outline: none;
+    border-color: #A78BFA;
+    box-shadow: 0 0 10px #A78BFA, inset 0 0 5px rgba(0, 0, 0, 0.5);
+    background: #374151;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Page headings */
+  .page h2 {
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: #F3F4F6;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    user-select: none;
+  }
+
+  /* Paragraph text */
+  .page p {
+    color: #9CA3AF;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    user-select: none;
+  }
+
+  /* Inner Cards (for results) */
+  .page .card {
+    background: #2D3748;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    color: #E2E8F0;
+    margin-top: 1.5rem;
+    border: 1px solid #4B5563;
+  }
+
+  /* Analysis results */
+  #code-analysis-results,
+  #ppt-analysis-results,
+  #generated-ideas {
+    white-space: pre-wrap;
+    font-family: 'Fira Code', 'Fira Mono', monospace;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #D1D5DB;
+    max-height: 350px;
+    overflow-y: auto;
+  }
+
+  /* Loading screen */
+  #loading-screen {
+    position: fixed;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  #loading-screen.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  #loading-screen svg {
+    width: 60px;
+    height: 60px;
+    stroke: #A78BFA;
+    stroke-width: 5;
+    fill: none;
+    animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  }
+  #loading-screen p {
+    margin-top: 1.5rem;
+    color: #F8FAFC;
+    font-weight: 600;
+    font-size: 1.25rem;
+    user-select: none;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Modal styles */
+  #message-modal,
+  #update-profile-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 1rem;
+    user-select: none;
+  }
+  #message-modal > div,
+  #update-profile-modal > div {
+    background: #2D3748;
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    max-width: 450px;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    color: #E2E8F0;
+    text-align: center;
+    border: 1px solid #4B5563;
+  }
+  #message-modal h3,
+  #update-profile-modal h3 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  #message-modal p,
+  #update-profile-modal p {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    color: #9CA3AF;
+  }
+  #message-modal button,
+  #update-profile-modal button {
+    margin: 0 0.5rem;
+    min-width: 100px;
+  }
+
+  /* Scrollbar */
+  textarea::-webkit-scrollbar,
+  #code-analysis-results::-webkit-scrollbar,
+  #ppt-analysis-results::-webkit-scrollbar,
+  #generated-ideas::-webkit-scrollbar {
+    width: 8px;
+  }
+  textarea::-webkit-scrollbar-thumb,
+  #code-analysis-results::-webkit-scrollbar-thumb,
+  #ppt-analysis-results::-webkit-scrollbar-thumb,
+  #generated-ideas::-webkit-scrollbar-thumb {
+    background-color: #6D28D9;
+    border-radius: 4px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    body {
+      padding: 1rem;
+    }
+    .card {
+      padding: 2rem;
+    }
+    header h1 {
+      font-size: 2rem;
+    }
+    .page h2 {
+      font-size: 1.5rem;
+    }
+    .btn {
+      font-size: 0.9rem;
+      padding: 0.6rem 1.5rem;
+    }
+    #message-modal > div,
+    #update-profile-modal > div {
+      padding: 1.5rem;
+    }
+  }
+</style>
+
+</head>
+<body>
+
+  <div id="loading-screen" class="hidden" aria-live="polite" aria-label="Loading">
+    <svg viewBox="0 0 50 50" aria-hidden="true">
+      <circle cx="25" cy="25" r="20" stroke="currentColor" stroke-width="5" fill="none" opacity="0.25"/>
+      <path d="M45 25a20 20 0 0 1-20 20" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+    <p>Loading...</p>
+  </div>
+
+  <main class="card" role="main" aria-label="Hackathon Coach Application">
+    <header>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm0-4h-2V7h2v8z"/>
+      </svg>
+      <h1>Hack-Mate</h1>
+    </header>
+
+    <p id="user-id-display" aria-live="polite" aria-atomic="true">Please log in.</p>
+
+    <nav class="nav-buttons" aria-label="Primary navigation">
+      <button id="logout-btn" class="btn nav-btn hidden" type="button">Logout</button>
+      <button class="btn nav-btn hidden logged-in" data-page="profile" type="button">Profile</button>
+      <button class="btn nav-btn hidden logged-in" data-page="hackathons" type="button">Hackathons</button>
+      <button class="btn nav-btn hidden logged-in" data-page="code-analyzer" type="button">Code Analyzer</button>
+      <button class="btn nav-btn hidden logged-in" data-page="ppt-analyzer" type="button">PPT Analyzer</button>
+      <button class="btn nav-btn hidden logged-in" data-page="ideas" type="button">Project Ideas</button>
+      <button class="btn nav-btn hidden logged-in" data-page="reminder" type="button">Reminder</button>
+    </nav>
+
+    <section id="login-page" class="page hidden" aria-label="Login or Register">
+      <h2>Login or Register</h2>
+      <div style="display:flex; flex-direction: column; gap: 1rem;">
+        <input type="text" id="login-username" placeholder="Username" autocomplete="username" aria-required="true" />
+        <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" aria-required="true" />
+        <button id="login-btn" class="btn" type="button">Login</button>
+        <button id="register-btn" class="btn register-btn" type="button">Register New Profile</button>
+      </div>
+      <p id="login-message" style="color:#f87171; margin-top:1rem; text-align:center;"></p>
+    </section>
+
+    <section id="profile-page" class="page hidden" aria-label="User  Profile">
+      <h2>Your Profile</h2>
+      <div style="display:flex; flex-direction: column; gap: 1rem;">
+        <input type="text" id="profile-name" placeholder="Your Name" autocomplete="name" />
+        <input type="text" id="profile-domain" placeholder="Domain (e.g., AI/ML, Web Dev)" />
+        <textarea id="profile-skills" placeholder="Skills (comma separated, e.g., Python, JavaScript, React)" rows="4"></textarea>
+        <button id="save-profile-btn" class="btn" type="button">Save Profile</button>
+        <button id="update-other-profile-btn" class="btn update-other-btn" type="button">Update Other Profile</button>
+      </div>
+      <p id="profile-message" style="color:#86efac; margin-top:1rem; text-align:center;"></p>
+    </section>
+
+    <section id="hackathons-page" class="page hidden" aria-label="Find Hackathons">
+      <h2>Find Hackathons</h2>
+      <p>Click below to find hackathons near you. This feature will use the Gemini API to search the web.</p>
+      <button id="find-hackathons-btn" class="btn" type="button">Find Nearby Hackathons</button>
+      <div id="hackathons-results" class="card" aria-live="polite" aria-atomic="true"></div>
+    </section>
+
+    <section id="code-analyzer-page" class="page hidden" aria-label="Code Analyzer">
+      <h2>Code Analyzer</h2>
+      <p>Paste your code and the hackathon's judging criteria. We'll analyze your code and suggest improvements.</p>
+      <textarea id="code-input" placeholder="Paste your code here..." rows="10" style="margin-bottom:1rem;"></textarea>
+      <textarea id="code-criteria" placeholder="Paste the judging criteria or rulebook here..." rows="5" style="margin-bottom:1rem;"></textarea>
+      <button id="analyze-code-btn" class="btn" type="button">Analyze Code</button>
+      <div id="code-analysis-results" class="card hidden" tabindex="0" aria-live="polite" aria-atomic="true">
+        <h3 style="font-weight:600; font-size:1.25rem; margin-bottom:0.5rem;">Analysis Results:</h3>
+        <div id="code-output"></div>
+      </div>
+    </section>
+
+    <section id="ppt-analyzer-page" class="page hidden" aria-label="Presentation Analyzer">
+      <h2>Presentation Analyzer</h2>
+      <p>Paste the text from your presentation slides. We'll give you feedback and suggestions.</p>
+      <textarea id="ppt-input" placeholder="Paste your presentation text here..." rows="10" style="margin-bottom:1rem;"></textarea>
+      <button id="analyze-ppt-btn" class="btn" type="button">Analyze Presentation</button>
+      <div id="ppt-analysis-results" class="card hidden" tabindex="0" aria-live="polite" aria-atomic="true">
+        <h3 style="font-weight:600; font-size:1.25rem; margin-bottom:0.5rem;">Analysis Results:</h3>
+        <div id="ppt-output"></div>
+      </div>
+    </section>
+
+    <section id="ideas-page" class="page hidden" aria-label="Project Ideas and Reminders">
+      <h2>Project Ideas & Reminders</h2>
+      <p>Generate project ideas based on your profile and get reminders.</p>
+      <button id="generate-ideas-btn" class="btn" style="margin-bottom:1rem;" type="button">Generate Project Ideas</button>
+      <div id="ideas-output" class="card" tabindex="0" aria-live="polite" aria-atomic="true">
+        <h3 style="font-weight:600; font-size:1.25rem; margin-bottom:0.5rem;">Your Ideas:</h3>
+        <div id="generated-ideas"></div>
+      </div>
+    </section>
+    
+    <section id="reminder-page" class="page hidden" aria-label="Set a Reminder">
+      <h2>Set a Reminder</h2>
+      <p>Set a timer to remind you of your progress during the hackathon.</p>
+      <div style="display:flex; flex-direction: row; gap: 1rem; align-items: center; justify-content: center;">
+        <input type="number" id="reminder-hours-input" placeholder="Hours" min="1" step="1" />
+        <button id="start-reminder-btn" class="btn" type="button">Start Timer</button>
+      </div>
+      <p id="reminder-status" style="color:#86efac; margin-top:1rem; text-align:center;"></p>
+    </section>
+
+  </main>
+
+    <div id="message-modal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-message">
+      <div>
+        <h3 id="modal-title"></h3>
+        <p id="modal-message"></p>
+        <div style="display:flex; justify-content:center; gap:1rem;">
+          <button id="modal-close-btn" class="btn" type="button">OK</button>
+          <button id="modal-reload-btn" class="btn hidden" type="button">Reload Page</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="update-profile-modal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="update-profile-title">
+      <div>
+        <h3 id="update-profile-title">Update Other Profile</h3>
+        <div style="display:flex; flex-direction: column; gap: 1rem;">
+          <input type="text" id="update-username" placeholder="Username to update" />
+          <input type="password" id="update-password" placeholder="Password" />
+          <button id="check-credentials-btn" class="btn">Check Credentials &amp; Log In</button>
+        </div>
+        <p id="update-message" style="color:#f87171; margin-top:1rem; text-align:center;"></p>
+        <div style="display:flex; justify-content:center; margin-top:1rem;">
+          <button id="update-modal-close-btn" class="btn cancel-btn" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+<script type="module">
+   // --- YOUR API KEY (managed by the platform) ---
+    const apiKey = 'AIzaSyDxVW1Fijgrh44O4zAsOA0jt4C_4ahhEyM';
+
+    // --- Global Variables (Canvas-provided) ---
+    // The Profiles are stored in localStorage as a JSON object.
+    // The "Profiles Folder" is simulated by a single localStorage key.
+    const PROFILES_KEY = 'profiles';
+    let currentUser = null;
+    let reminderTimer = null;
+
+    // --- UI State Management ---
+    const pages = document.querySelectorAll('.page');
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const loggedInButtons = document.querySelectorAll('.logged-in');
+    const loadingScreen = document.getElementById('loading-screen');
+    const modal = document.getElementById('message-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMessage = document.getElementById('modal-message');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+    const modalReloadBtn = document.getElementById('modal-reload-btn');
+    const updateProfileModal = document.getElementById('update-profile-modal');
+    const updateModalCloseBtn = document.getElementById('update-modal-close-btn');
+
+    const showPage = (pageId) => {
+        pages.forEach(page => page.classList.add('hidden'));
+        document.getElementById(pageId).classList.remove('hidden');
+    };
+
+    const updateUIForLogin = () => {
+        if (currentUser) {
+            document.getElementById('user-id-display').textContent = `Current Profile: ${currentUser.username}`;
+            document.getElementById('logout-btn').classList.remove('hidden');
+            loggedInButtons.forEach(btn => btn.classList.remove('hidden'));
+            showPage('profile-page');
+            loadProfileData(currentUser.username);
+        } else {
+            document.getElementById('user-id-display').textContent = 'Please log in.';
+            document.getElementById('logout-btn').classList.add('hidden');
+            loggedInButtons.forEach(btn => btn.classList.add('hidden'));
+            showPage('login-page');
+        }
+    };
+
+    const showLoading = (message) => {
+        const loadingText = loadingScreen.querySelector('p');
+        loadingText.textContent = message;
+        loadingScreen.classList.remove('hidden');
+        loadingScreen.classList.add('show');
+    };
+
+    const hideLoading = () => {
+        loadingScreen.classList.remove('show');
+        setTimeout(() => loadingScreen.classList.add('hidden'), 300);
+    };
+
+    const showModal = (title, message, showReload = false) => {
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+        modalCloseBtn.classList.toggle('hidden', showReload);
+        modalReloadBtn.classList.toggle('hidden', !showReload);
+        modal.classList.remove('hidden');
+    };
+
+    const closeModal = () => {
+        modal.classList.add('hidden');
+    };
+
+    const showUpdateProfileModal = () => {
+        updateProfileModal.classList.remove('hidden');
+        document.getElementById('update-username').value = '';
+        document.getElementById('update-password').value = '';
+        document.getElementById('update-message').textContent = '';
+    };
+
+    const closeUpdateProfileModal = () => {
+        updateProfileModal.classList.add('hidden');
+    };
+
+    // --- Profile Management Logic (Local Storage) ---
+    const getProfiles = () => {
+        const profilesString = localStorage.getItem(PROFILES_KEY);
+        try {
+            return JSON.parse(profilesString) || {};
+        } catch (e) {
+            console.error("Failed to parse profiles from localStorage. Starting with a blank slate.", e);
+            return {};
+        }
+    };
+
+    const saveProfiles = (profiles) => {
+        localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+    };
+
+    const authenticateUser = (username, password) => {
+        const profiles = getProfiles();
+        const profile = profiles[username];
+        if (profile && profile.password === password) {
+            return profile;
+        }
+        return null;
+    };
+
+    const registerProfile = (username, password) => {
+        const profiles = getProfiles();
+        if (profiles[username]) {
+            return false; // Username already exists
+        }
+        profiles[username] = {
+            username,
+            password,
+            name: '',
+            domain: '',
+            skills: ''
+        };
+        saveProfiles(profiles);
+        return true;
+    };
+
+    const loginUser = (username, password) => {
+        const profile = authenticateUser(username, password);
+        if (profile) {
+            currentUser = profile;
+            updateUIForLogin();
+            document.getElementById('login-message').textContent = 'Login successful!';
+        } else {
+            document.getElementById('login-message').textContent = 'Invalid username or password.';
+        }
+    };
+
+    const logoutUser = () => {
+        currentUser = null;
+        if (reminderTimer) {
+            clearInterval(reminderTimer);
+            reminderTimer = null;
+        }
+        updateUIForLogin();
+        showModal('Logged Out', 'You have been successfully logged out.');
+    };
+
+    const saveCurrentProfile = () => {
+        if (!currentUser) return;
+        const profiles = getProfiles();
+        profiles[currentUser.username] = {
+            ...currentUser,
+            name: document.getElementById('profile-name').value,
+            domain: document.getElementById('profile-domain').value,
+            skills: document.getElementById('profile-skills').value
+        };
+        saveProfiles(profiles);
+        // Update the in-memory currentUser object
+        currentUser = profiles[currentUser.username];
+        document.getElementById('profile-message').textContent = 'Profile saved successfully!';
+    };
+
+    const loadProfileData = (username) => {
+        const profiles = getProfiles();
+        const profile = profiles[username];
+        if (profile) {
+            document.getElementById('profile-name').value = profile.name || '';
+            document.getElementById('profile-domain').value = profile.domain || '';
+            document.getElementById('profile-skills').value = profile.skills || '';
+        }
+    };
+
+    // --- Markdown Renderer Function ---
+    const renderMarkdown = (markdownText) => {
+        let html = markdownText
+            // Replace bold **text** with <strong>text</strong>
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            // Replace italic *text* with <em>text</em>
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            // Replace h2 ## heading with <h2>heading</h2>
+            .replace(/^##\s*(.*$)/g, '<h2>$1</h2>')
+            // Replace list items - item with <li>item</li>
+            .replace(/^\s*-\s(.*$)/gm, '<li>$1</li>')
+            // Replace horizontal rule --- with <hr>
+            .replace(/---\n/g, '<hr>')
+            // Add paragraph tags for each line
+            .replace(/\n/g, '<br/>')
+            .replace(/<br\/>/g, '</p><p>');
+        
+        // Wrap the entire content in a paragraph if it's not already a list or heading
+        if (!html.startsWith('<h') && !html.startsWith('<li')) {
+            html = `<p>${html}</p>`;
+        }
+
+        // Clean up any empty paragraphs
+        html = html.replace(/<p><\/p>/g, '');
+        return html;
+    };
+
+    // --- Gemini API & Geolocation Logic ---
+    const geminiApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+    const makeGeminiRequest = async (prompt, systemInstruction = null, tools = null) => {
+        const payload = {
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {},
+            systemInstruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined,
+            tools: tools
+        };
+
+        const headers = { 'Content-Type': 'application/json' };
+        let response = null;
+        let attempt = 0;
+        const maxAttempts = 5;
+        const baseDelay = 1000;
+
+        while (attempt < maxAttempts) {
+            try {
+                response = await fetch(geminiApiUrl, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.status === 429) { // Too Many Requests
+                    const delay = baseDelay * Math.pow(2, attempt);
+                    console.log(`Rate limit exceeded. Retrying in ${delay}ms...`);
+                    await new Promise(res => setTimeout(res, delay));
+                    attempt++;
+                    continue;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                return await response.json();
+
+            } catch (error) {
+                console.error("Fetch failed:", error);
+                throw error;
+            }
+        }
+        throw new Error("Failed to get a response from the API after multiple retries.");
+    };
+
+    const findNearbyHackathons = () => {
+        if (!currentUser) { showModal('Authentication Required', 'Please log in to use this feature.'); return; }
+
+        showLoading('Finding your location...');
+        if (!navigator.geolocation) {
+            showModal('Error', 'Geolocation is not supported by your browser.');
+            hideLoading();
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const locationPrompt = `Find upcoming hackathons near latitude ${lat} and longitude ${lon}. Provide a list with the event name, date, location, and a brief description. Format the response using markdown headings and bullet points for a clean, readable output.`;
+
+            showLoading('Searching for hackathons...');
+            try {
+                const response = await makeGeminiRequest(locationPrompt);
+                const resultText = response?.candidates?.[0]?.content?.parts?.[0]?.text;
+                const resultsDiv = document.getElementById('hackathons-results');
+                resultsDiv.innerHTML = resultText ? renderMarkdown(resultText) : '<p>No hackathons found or search failed. Please try again with a different location.</p>';
+            } catch (error) {
+                console.error("Hackathon search failed:", error);
+                showModal('Error', 'Failed to find hackathons. Please try again later.');
+            } finally {
+                hideLoading();
+            }
+        }, (error) => {
+            console.error("Geolocation error:", error);
+            showModal('Error', `Geolocation failed: ${error.message}`);
+            hideLoading();
+        });
+    };
+
+    const analyzeCode = async () => {
+        if (!currentUser) { showModal('Authentication Required', 'Please log in to use this feature.'); return; }
+        const code = document.getElementById('code-input').value;
+        const criteria = document.getElementById('code-criteria').value;
+
+        if (!code || !criteria) {
+            showModal('Missing Input', 'Please paste your code and the judging criteria.');
+            return;
+        }
+
+        const prompt = `Analyze the following code and provide suggestions for improvement based on the provided hackathon judging criteria. Focus on innovation, technical implementation, and potential impact.
+
+        **Judging Criteria:**
+        ${criteria}
+
+        **Code:**
+        \`\`\`
+        ${code}
+        \`\`\`
+        `;
+
+        showLoading('Analyzing your code...');
+        try {
+            const response = await makeGeminiRequest(prompt);
+            const resultText = response?.candidates?.[0]?.content?.parts?.[0]?.text;
+            document.getElementById('code-output').innerHTML = resultText ? renderMarkdown(resultText) : 'Analysis failed. Please try again.';
+            document.getElementById('code-analysis-results').classList.remove('hidden');
+        } catch (error) {
+            console.error("Code analysis failed:", error);
+            showModal('Error', 'Failed to analyze code. Please try again later.');
+        } finally {
+            hideLoading();
+        }
+    };
+
+    const analyzePpt = async () => {
+        if (!currentUser) { showModal('Authentication Required', 'Please log in to use this feature.'); return; }
+        const pptText = document.getElementById('ppt-input').value;
+
+        if (!pptText) {
+            showModal('Missing Input', 'Please paste the text from your presentation slides.');
+            return;
+        }
+
+        const prompt = `Review the following text from a hackathon presentation. Provide feedback on clarity, storytelling, and persuasiveness. Offer suggestions to improve the flow and highlight the project's key features and value proposition.
+
+        **Presentation Text:**
+        ${pptText}
+        `;
+
+        showLoading('Analyzing your presentation...');
+        try {
+            const response = await makeGeminiRequest(prompt);
+            const resultText = response?.candidates?.[0]?.content?.parts?.[0]?.text;
+            document.getElementById('ppt-output').innerHTML = resultText ? renderMarkdown(resultText) : 'Analysis failed. Please try again.';
+            document.getElementById('ppt-analysis-results').classList.remove('hidden');
+        } catch (error) {
+            console.error("PPT analysis failed:", error);
+            showModal('Error', 'Failed to analyze presentation. Please try again later.');
+        } finally {
+            hideLoading();
+        }
+    };
+
+    const generateIdeas = async () => {
+        if (!currentUser) { showModal('Authentication Required', 'Please log in to use this feature.'); return; }
+
+        const prompt = `Based on the following user profile, generate a list of 5 innovative and feasible hackathon project ideas. The ideas should incorporate the user's domain and skills. Provide a short, one-sentence description for each idea.
+
+        **User Profile:**
+        - Name: ${currentUser.name || 'N/A'}
+        - Domain: ${currentUser.domain || 'N/A'}
+        - Skills: ${currentUser.skills || 'N/A'}
+        `;
+
+        showLoading('Generating project ideas...');
+        try {
+            const response = await makeGeminiRequest(prompt);
+            const resultText = response?.candidates?.[0]?.content?.parts?.[0]?.text;
+            document.getElementById('generated-ideas').innerHTML = resultText ? renderMarkdown(resultText) : 'Failed to generate ideas. Please try again.';
+        } catch (error) {
+            console.error("Idea generation failed:", error);
+            showModal('Error', 'Failed to generate ideas. Please try again later.');
+        } finally {
+            hideLoading();
+        }
+    };
+
+    const startReminder = () => {
+        if (!currentUser) { showModal('Authentication Required', 'Please log in to use this feature.'); return; }
+        
+        const hoursInput = document.getElementById('reminder-hours-input');
+        const hours = parseInt(hoursInput.value, 10);
+        const statusDisplay = document.getElementById('reminder-status');
+        
+        if (isNaN(hours) || hours <= 0) {
+            statusDisplay.textContent = "Please enter a valid number of hours (e.g., 1, 2, 3).";
+            return;
+        }
+
+        // Clear any existing timer
+        if (reminderTimer) {
+            clearInterval(reminderTimer);
+        }
+
+        const endTime = new Date().getTime() + (hours * 60 * 60 * 1000);
+        statusDisplay.textContent = `Reminder set for ${hours} hour(s).`;
+
+        reminderTimer = setInterval(() => {
+            const now = new Date().getTime();
+            if (now >= endTime) {
+                clearInterval(reminderTimer);
+                reminderTimer = null;
+                showModal(
+                    'Time Flies!',
+                    `It's been ${hours} hour(s) since you started the timer. Time to check on your progress and re-strategize if needed!`,
+                    false
+                );
+                statusDisplay.textContent = "Timer finished. You can start a new one.";
+            }
+        }, 1000); // Check every second
+
+    };
+
+    // --- Event Listeners ---
+    document.addEventListener('DOMContentLoaded', () => {
+        updateUIForLogin();
+    });
+
+    navButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const pageId = btn.getAttribute('data-page');
+            showPage(`${pageId}-page`);
+        });
+    });
+
+    document.getElementById('login-btn').addEventListener('click', () => {
+        const username = document.getElementById('login-username').value;
+        const password = document.getElementById('login-password').value;
+        if (username && password) {
+            loginUser(username, password);
+        } else {
+            document.getElementById('login-message').textContent = 'Please enter both username and password.';
+        }
+    });
+
+    document.getElementById('register-btn').addEventListener('click', () => {
+        const username = document.getElementById('login-username').value;
+        const password = document.getElementById('login-password').value;
+        if (username && password) {
+            if (registerProfile(username, password)) {
+                showModal('Success', 'Profile registered! Please log in with your new credentials.');
+                document.getElementById('login-username').value = '';
+                document.getElementById('login-password').value = '';
+            } else {
+                showModal('Error', 'Username already exists. Please choose a different username.');
+            }
+        } else {
+            document.getElementById('login-message').textContent = 'Please enter a username and password to register.';
+        }
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', logoutUser);
+    document.getElementById('save-profile-btn').addEventListener('click', saveCurrentProfile);
+    document.getElementById('find-hackathons-btn').addEventListener('click', findNearbyHackathons);
+    document.getElementById('analyze-code-btn').addEventListener('click', analyzeCode);
+    document.getElementById('analyze-ppt-btn').addEventListener('click', analyzePpt);
+    document.getElementById('generate-ideas-btn').addEventListener('click', generateIdeas);
+    document.getElementById('start-reminder-btn').addEventListener('click', startReminder);
+    modalCloseBtn.addEventListener('click', closeModal);
+    modalReloadBtn.addEventListener('click', () => window.location.reload());
+    updateModalCloseBtn.addEventListener('click', closeUpdateProfileModal);
+    document.getElementById('update-other-profile-btn').addEventListener('click', showUpdateProfileModal);
+
+    document.getElementById('check-credentials-btn').addEventListener('click', () => {
+        const username = document.getElementById('update-username').value;
+        const password = document.getElementById('update-password').value;
+        const profile = authenticateUser(username, password);
+        if (profile) {
+            closeUpdateProfileModal();
+            loginUser(username, password);
+            showModal('Success', `Successfully logged into profile "${username}". You can now update their details.`);
+        } else {
+            document.getElementById('update-message').textContent = 'Invalid username or password. No profile found.';
+        }
+    });
+
+</script>
+
+</body>
+</html>
